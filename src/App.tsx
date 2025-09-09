@@ -6,7 +6,6 @@ import './App.css'
 function App():React.JSX.Element {
   const [count, setCount] = useState(0)
 
-
   return (
     <>
       <div>
@@ -19,7 +18,7 @@ function App():React.JSX.Element {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
+        <button onClick={() => {setCount((count) => count + 1)}}>
           count is {count}
         </button>
         <p>
