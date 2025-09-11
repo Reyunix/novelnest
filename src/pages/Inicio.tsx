@@ -1,6 +1,11 @@
-export const MainContent: React.FC = () => {
+export const Inicio: React.FC = () => {
   return (
-    <main className="main-content">
+    <div className="layout">
+      <section className="hero-section">
+        <h1 className="main-title">Bienvenido a <em>NovelNest</em></h1>
+      <h2 className="subtitle">Comienza a organizar y hacer de seguimiento de <em>todas tus lecturas</em></h2>
+      <a href="html/spa.html" className="action-link hover-opacity">¡Busca tus obras favoritas!</a>
+      </section>
       <section className="main-section">
         <article className="article">
           <section id="introduction">
@@ -40,7 +45,7 @@ export const MainContent: React.FC = () => {
       <section className="top-books-section">
         <article>
           <h2>Top libros del mes</h2>
-          <ol>
+          <ol className="top-books-items">
             <li>
               <em>
                 <strong>La llamada</strong>, Leila Guerriero
@@ -91,6 +96,6 @@ export const MainContent: React.FC = () => {
           </ol>
         </article>
       </section>
-    </main>
+    </div>
   );
 };
