@@ -13,6 +13,7 @@ export const BookCard:React.FC<Props> = ({bookItem}) => {
         <img src={book?.imageLinks?.smallThumbnail} alt="" />
         <p>{book?.categories}</p>
         <p>{book?.publisher}</p>
+        {book?.publishedDate && <p>{book.publishedDate.toString()}</p>}
         <p>{book?.pageCount}</p>
 
     </div>

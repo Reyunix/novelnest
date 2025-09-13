@@ -4,6 +4,8 @@ import { Inicio } from "../pages/Inicio";
 import { Header } from "../pages/Header";
 import { Footer } from "../pages/Footer";
 import { SearchPage } from "../pages/SearchPage";
+import { Login } from "../pages/Login";
+import { Register } from "../pages/Register";
 
 export const AppRoutes:React.FC = () =>{
 
@@ -18,6 +20,8 @@ export const AppRoutes:React.FC = () =>{
                 <Route path="/" element={<Inicio/>} />
                 <Route path="/inicio" element={<Inicio/>} />
                 <Route path="/buscar" element={<SearchPage/>} />
+                <Route path="/login" element={<Login/>} />
+                <Route path="/register" element={<Register/>} />
             </Routes>
         </main>
 

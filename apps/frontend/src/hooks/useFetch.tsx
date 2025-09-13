@@ -1,15 +1,23 @@
 import { useState, useEffect } from "react";
 import type { ApiResponse } from "../interfaces/interfaces";
-export const useFetch = (url: string) => {
+
+interface Props {
+  URL: string
+  triggerInput: boolean
+}
+
+export const useFetch = ({URL, triggerInput}:Props) => {
   const [data, setData] = useState<ApiResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!triggerInput){ return}
+
     setLoading(true);
     const fetchData = async () => {
       try {
-        const response = await fetch(url);
+        const response = await fetch(URL);
         if (!response.ok) {
           throw new Error("Ha ocurrido un error al cargar los usuarios");
         }
@@ -27,7 +35,7 @@ export const useFetch = (url: string) => {
       }
     };
     void fetchData();
-  }, []);
+  }, [triggerInput]);
 
   return { data, loading, error };
 };
