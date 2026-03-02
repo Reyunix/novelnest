@@ -40,9 +40,9 @@ Your `novelnest` repo should look like this:
 ```zsh
 ./novelnest
 ├── dev-up.sh
-├── docs
-├── novelnest-backend
-├── novelnest-frontend
+├── docs/
+├── novelnest-backend/
+├── novelnest-frontend/
 ├── package.json
 └── README.md
 ```
