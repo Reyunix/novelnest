@@ -1,4 +1,4 @@
-# NovelNest
+# 📚 NovelNest
 
 Central workspace repository for NovelNest.
 
