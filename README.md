@@ -13,7 +13,7 @@ This repository is a project hub (docs + local orchestration), not a monorepo fo
 
 - Shared documentation (`docs/`)
 - Local startup scripts (`dev-up.sh`)
-- Root helper scripts (`npm run dev`, `npm run db:up`, `npm run db:down`)
+- Root helper scripts (`bun run dev`, `bun run db:up`, `bun run db:down`)
 
 ## Project layout
 
@@ -24,7 +24,7 @@ This repository is a project hub (docs + local orchestration), not a monorepo fo
 
 ## Prerequisites
 
-- Bun or npm
+- Bun
 - Docker
 - Git
 
@@ -52,7 +52,7 @@ Your `novelnest` repo should look like this:
 5. Start everything from root:
 
 ```bash
-npm run dev
+bun run dev
 ```
 
 This starts:
@@ -60,6 +60,14 @@ This starts:
 - Prisma schema sync/generate (backend)
 - Backend dev server
 - Frontend dev server
+
+Tips:
+- You can run Prisma Studio to visualize the database with:
+
+```bash
+cd novelnest-backend
+bun studio
+```
 
 ## Environment setup
 
@@ -103,9 +111,9 @@ Notes:
 
 ## Root scripts
 
-- `npm run dev`: full local startup (DB + backend + frontend)
-- `npm run db:up`: start PostgreSQL only
-- `npm run db:down`: stop PostgreSQL
+- `bun run dev`: full local startup (DB + backend + frontend)
+- `bun run db:up`: start PostgreSQL only
+- `bun run db:down`: stop PostgreSQL
 
 ## Current local networking setup
 
