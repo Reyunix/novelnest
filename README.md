@@ -34,6 +34,19 @@ This repository is a project hub (docs + local orchestration), not a monorepo fo
 2. Clone app repos into these exact directories:
    - `novelnest-frontend/`
    - `novelnest-backend/`
+
+Your `novelnest` repo should look like this:
+
+```zsh
+./novelnest
+├── dev-up.sh
+├── docs
+├── novelnest-backend
+├── novelnest-frontend
+├── package.json
+└── README.md
+```
+
 3. Install dependencies in both projects.
 4. Configure env files (`novelnest-backend/.env`, `novelnest-frontend/.env.local`).
 5. Start everything from root:
@@ -47,6 +60,46 @@ This starts:
 - Prisma schema sync/generate (backend)
 - Backend dev server
 - Frontend dev server
+
+## Environment setup
+
+### Backend (`novelnest-backend/.env`)
+
+Minimal local dev example:
+
+```env
+DATABASE_URL=postgresql://postgres:postgres@localhost:5433/mydb
+JWT_SECRET=replace-with-a-strong-secret
+API_KEY=your-google-books-api-key
+BASE_URL=https://www.googleapis.com/books/v1/volumes?
+URL_FIELD=fields=items(id,volumeInfo(authors,canonicalVolumeLink,categories,description,imageLinks,industryIdentifiers,language,maturityRating,pageCount,publishedDate,publisher,title))
+NODE_ENV=development
+```
+
+Optional (only if you run backend over HTTPS):
+
+```env
+HTTPS_KEY=/absolute/path/to/key.pem
+HTTPS_CERT=/absolute/path/to/cert.pem
+```
+
+### Frontend (`novelnest-frontend/.env.local`)
+
+Local dev example:
+
+```env
+VITE_PORT=3000
+VITE_API_REGISTER_ENDPOINT=http://localhost:3000/api/v1/auth/register
+VITE_API_LOGIN_ENDPOINT=http://localhost:3000/api/v1/auth/login
+VITE_API_LOGOUT_ENDPOINT=http://localhost:3000/api/v1/auth/logout
+VITE_API_ME_ENDPOINT=http://localhost:3000/api/v1/auth/me
+VITE_API_BOOKS_SEARCH_ENDPOINT=http://localhost:3000/api/v1/books/search
+```
+
+Notes:
+- Keep Google API key in backend only.
+- Keep protocol/host consistent (`http://localhost`) in local dev.
+- Do not commit real secrets.
 
 ## Root scripts
 
