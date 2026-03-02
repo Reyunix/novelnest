@@ -128,6 +128,8 @@ Use `localhost` consistently (avoid mixing with `127.0.0.1`) to prevent cookie/s
 - `docs/frontend/auth-context.md`
 - `docs/frontend/protected-routes.md`
 - `docs/frontend/constants-organization.md`
+- `docs/external-api/README.md`
+- `docs/future-implementations.md`
 
 ## Notes
 
