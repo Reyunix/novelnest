@@ -1,0 +1,9 @@
+{
+  "name": "novelnest",
+  "private": true,
+  "scripts": {
+    "dev": "./dev-up.sh",
+    "db:up": "docker compose -f novelnest-backend/docker/docker-compose.yml up -d",
+    "db:down": "docker compose -f novelnest-backend/docker/docker-compose.yml down"
+  }
+}
