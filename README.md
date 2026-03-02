@@ -2,57 +2,68 @@
 
 Central workspace repository for NovelNest.
 
-This repository is **not** a monorepo for application code. It is the project hub for:
-- shared documentation
-- local development orchestration scripts
-- links to the independent frontend/backend repositories
+This repository is a project hub (docs + local orchestration), not a monorepo for app source code.
 
 ## Repositories
 
 - Frontend: https://github.com/Reyunix/novelnest-frontend
 - Backend: https://github.com/Reyunix/novelnest-backend
 
-## Purpose of this repo
+## Scope of this repo
 
-- Keep docs in one place (`docs/`)
-- Run local stack with one command (`npm run dev`)
-- Manage local DB lifecycle from root (`npm run db:up`, `npm run db:down`)
+- Shared documentation (`docs/`)
+- Local startup scripts (`dev-up.sh`)
+- Root helper scripts (`npm run dev`, `npm run db:up`, `npm run db:down`)
 
 ## Project layout
 
-- `docs/`: project documentation
+- `docs/`: cross-project documentation
 - `dev-up.sh`: starts DB + backend + frontend
-- `package.json`: root scripts for local orchestration
-- `.ssl/`: local SSL artifacts (development only, not committed externally)
+- `package.json`: root scripts
+- `.ssl/`: optional local SSL artifacts (legacy/optional)
+
+## Prerequisites
+
+- Bun or npm
+- Docker
+- Git
 
 ## Quick start (local)
 
-1. Clone this repository.
-2. Clone the app repositories into these exact folders:
+1. Clone this workspace repository.
+2. Clone app repos into these exact directories:
    - `novelnest-frontend/`
    - `novelnest-backend/`
 3. Install dependencies in both projects.
-4. From this root, run:
+4. Configure env files (`novelnest-backend/.env`, `novelnest-frontend/.env.local`).
+5. Start everything from root:
 
 ```bash
 npm run dev
 ```
 
 This starts:
-- PostgreSQL via Docker Compose (from backend)
-- Prisma sync/generate (backend)
+- PostgreSQL (Docker Compose from backend)
+- Prisma schema sync/generate (backend)
 - Backend dev server
 - Frontend dev server
 
 ## Root scripts
 
 - `npm run dev`: full local startup (DB + backend + frontend)
-- `npm run db:up`: start PostgreSQL container
-- `npm run db:down`: stop PostgreSQL container
+- `npm run db:up`: start PostgreSQL only
+- `npm run db:down`: stop PostgreSQL
+
+## Current local networking setup
+
+- Frontend: `http://localhost:5173`
+- Backend: `http://localhost:3000`
+- PostgreSQL: `localhost:5433`
+
+Use `localhost` consistently (avoid mixing with `127.0.0.1`) to prevent cookie/session issues.
 
 ## Documentation
 
-Current docs:
 - `docs/frontend/auth-context.md`
 - `docs/frontend/protected-routes.md`
 - `docs/frontend/constants-organization.md`
@@ -61,4 +72,4 @@ Current docs:
 
 - Frontend and backend are intentionally independent Git repositories.
 - Root `.gitignore` excludes `novelnest-frontend/` and `novelnest-backend/`.
-- Keep secrets and local certificates out of public repositories.
+- Do not commit secrets (`.env`, private keys, local certs).
