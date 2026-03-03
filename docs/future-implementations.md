@@ -5,11 +5,12 @@ This file tracks pending features and technical improvements for NovelNest.
 ## Priority 1 (Core Product)
 
 - [ ] **External API adapter architecture (Google Books -> provider adapters)**
-  - Create a provider-agnostic contract (e.g. `BooksAdapter`).
-  - Move Google Books logic into `GoogleBooksAdapter`.
-  - Keep backend route/service contract stable (`/api/v1/books/search`).
-  - Keep frontend schema unchanged by mapping provider response to internal DTO.
-  - Add one integration test to guarantee adapter output shape.
+  - [x] Create a provider-agnostic contract (`BooksAdapter`).
+  - [x] Move Google Books logic into `GoogleBooksAdapter`.
+  - [x] Keep backend route/service contract stable (`/api/v1/books/search`).
+  - [x] Introduce internal backend DTO (`BooksSearchResponseDto`).
+  - [ ] Align frontend schema/components to consume internal DTO (remove Google payload assumptions).
+  - [ ] Add integration tests to guarantee adapter output shape.
 
 - [ ] **User books collection (authenticated CRUD)**
   - `GET /api/v1/users/me/books`
@@ -34,10 +35,11 @@ This file tracks pending features and technical improvements for NovelNest.
   - Ensure all modules use the same success/error catalog shape.
   - Add explicit 400/401/403/404/409/422/502 mappings where needed.
 
-- [ ] **Rate limiting and external API protection**
-  - Add per-IP/user limit for search endpoints.
-  - Add timeout/retry policy for provider requests.
-  - Add basic response cache for repeated queries.
+- [ ] **External provider resiliency**
+  - Add timeout/cancellation for provider calls.
+  - Add retry/backoff policy for transient external failures.
+  - Add response cache for repeated queries.
+  - Add provider-specific observability (latency, error rate, invalid payload counts).
 
 ## Priority 3 (Developer Experience)
 
