@@ -120,6 +120,8 @@ Run these checks after any provider/adapter change.
 - Add response caching for repeated search queries.
 - Add structured logs/metrics by provider (latency, error rate, status distribution).
 
+For implementation details, see `docs/external-api/provider-migration-playbook.md`.
+
 ## Migration strategy to another external API
 
 ### Goal
