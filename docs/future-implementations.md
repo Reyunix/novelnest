@@ -5,7 +5,7 @@ This file tracks pending features and technical improvements for NovelNest.
 ## Priority 1 (Core Product)
 
 - [ ] **External API adapter architecture (Google Books -> provider adapters)**
-  - Create a provider-agnostic contract (e.g. `BooksProvider`).
+  - Create a provider-agnostic contract (e.g. `BooksAdapter`).
   - Move Google Books logic into `GoogleBooksAdapter`.
   - Keep backend route/service contract stable (`/api/v1/books/search`).
   - Keep frontend schema unchanged by mapping provider response to internal DTO.

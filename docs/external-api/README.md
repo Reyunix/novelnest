@@ -1,108 +1,113 @@
 # External API Integration (Google Books)
 
-This document explains which external API NovelNest currently uses, how it is consumed today, why it is currently coupled to the project schemas, and how to migrate to a different provider without breaking frontend/backend.
+This document describes how NovelNest consumes Google Books, what is currently implemented, and how to migrate safely to other providers.
 
-## Current external API
+## Current provider
 
-NovelNest currently uses the Google Books API:
+NovelNest currently uses Google Books API (`/volumes`).
 
-- Base URL: `https://www.googleapis.com/books/v1/volumes?`
-- Backend consumed endpoint: query search (`q`)
-- Authentication: API key in query string (`key=...`)
+Provider-level configuration in backend env:
 
-Current backend environment variables (`novelnest-backend/.env`):
-- `API_KEY`
-- `BASE_URL`
-- `URL_FIELD`
+- `API_BOOKS_PROVIDER`
+- `API_KEY_GOOGLE`
+- `API_BASE_URL_GOOGLE`
+- `API_VOLUME_FIELDS_GOOGLE`
 
-## Current consumption flow
+## Current implementation status
 
-1. Frontend calls backend:
-- `GET /api/v1/books/search?q=<text>`
+The adapter layer is already implemented in backend:
 
-2. Backend validates query:
-- `novelnest-backend/src/modules/books/books.schema.ts`
-- `novelnest-backend/src/modules/books/books.service.ts` (`validateQuery`)
+- Adapter interface: `src/modules/books/adapters/books.adapter.ts`
+- Google adapter: `src/modules/books/adapters/googleBooks.adapter.ts`
+- Adapter selector: `src/modules/books/adapters/index.ts`
 
-3. Backend builds external URL:
-- `novelnest-backend/src/utils/FormatUrl.ts`
-- uses `BASE_URL`, `URL_FIELD`, `API_KEY`, `q`, `startIndex`, `maxResults`, etc.
+Selection behavior (`API_BOOKS_PROVIDER`):
 
-4. Backend fetches Google Books and returns the result:
-- `novelnest-backend/src/modules/books/books.service.ts` (`fetchBooks`)
+- `google` -> uses `GoogleBooksAdapter`
+- invalid value -> returns `INVALID_BOOKS_PROVIDER`
 
-5. Frontend consumes typed response:
-- `novelnest-frontend/src/features/books/hooks/useBookSearch.ts`
-- `novelnest-frontend/src/schemas/apiResponseSchema.ts`
+## Request flow
 
-## Current coupling status
+1. Frontend calls backend search endpoint.
+2. Backend validates internal search params.
+3. Backend resolves the configured books adapter.
+4. Adapter translates internal params to provider query format.
+5. Adapter performs fetch to provider.
+6. Backend returns response to frontend.
 
-There is currently strong coupling to the Google Books payload shape.
+Current app endpoint:
 
-## Evidence
+- `GET /api/v1/books/search`
 
-- Backend types the response with a schema that mirrors the external payload:
-  - `novelnest-backend/src/schemas/bookApiSchema.ts`
-- Frontend types the same external response structure:
-  - `novelnest-frontend/src/schemas/apiResponseSchema.ts`
-- Backend does not transform into an internal DTO; it returns the provider shape almost directly.
+## Internal search contract (backend API)
 
-## Consequence
+Frontend sends domain params (not provider syntax):
 
-If Google changes fields, types, or nesting, it directly impacts:
-- backend service
-- frontend schemas
-- UI components (`BookCard`, `SearchPage`, etc.)
+- `q`
+- `title`
+- `author`
+- `subject`
+- `isbn`
+- `sort` (`relevance | newest`)
+- `page` (>= 1)
+- `limit` (1..40)
+- `printType` (`all | books | magazines`)
+- `availability` (`partial | full | free-ebooks | paid-ebooks | ebooks`)
+- `download` (`epub`)
+- `projection` (`full | lite`)
 
-## How to migrate to another API (recommended strategy)
+At least one search term is required: `q`, `title`, `author`, `subject`, or `isbn`.
 
-The key is to decouple via an internal contract.
+## Mapping to Google Books
 
-## Goal
+NovelNest-to-Google mapping:
 
-Define a stable internal domain model (DTO) and adapt each external provider to that model.
+- `title` -> `intitle:<value>` in provider `q`
+- `author` -> `inauthor:<value>` in provider `q`
+- `subject` -> `subject:<value>` in provider `q`
+- `isbn` -> `isbn:<value>` in provider `q`
+- `q` -> plain text term in provider `q`
+- `sort` -> `orderBy`
+- `page` + `limit` -> `startIndex` + `maxResults`
+- `availability` -> `filter`
+- `download` -> `download`
+- `printType` -> `printType`
+- `projection` -> `projection`
 
-## Migration plan (phased)
+Provider-only fields never come from frontend:
 
-1. Define internal search contract in backend
-- Create, for example, `BookSearchResult` and `BookSearchItem`.
-- Include only fields actually needed by UI (`id`, `title`, `authors`, `thumbnail`, `canonicalLink`, `publishedDate`, etc.).
+- `key`
+- `fields`
 
-2. Create provider adapter layer
-- Add an adapter module, for example:
-  - `src/modules/books/providers/googleBooks.adapter.ts`
-- Responsibility:
-  - input: Google payload
-  - output: internal DTO (`BookSearchResult`)
+## Why this contract matters
 
-3. Update service to return internal DTO
-- `fetchBooks` should no longer return raw Google schema.
-- Return normalized internal contract.
+Frontend should never know provider-specific syntax (for example `intitle:` or provider `fields`).
 
-4. Update frontend to internal contract
-- Replace `apiResponseSchema.ts` with schema matching the backend internal contract.
-- Update `BookCard` and other consumers to the stable shape.
+This keeps the public app API stable when changing provider.
 
-5. Add new provider without breaking UI
-- Implement a second adapter:
-  - `openLibrary.adapter.ts` (or chosen provider)
-- Same DTO output.
-- Provider selection by backend config/env.
+## Migration strategy to another external API
 
-## Technical checklist for safe migration
+### Goal
 
-- [ ] Add mapping tests (provider payload -> internal DTO)
-- [ ] Keep `/api/v1/books/search` route unchanged
-- [ ] Version response if you introduce breaking changes (`/api/v2/...`)
-- [ ] Add fallback handling for optional fields in adapter
-- [ ] Document final contract in backend and frontend
+Use one dedicated adapter per provider while keeping one stable internal contract.
 
-## Architectural recommendation
+### Recommended shape
 
-Keep this rule:
+- `BooksAdapter` interface (internal contract)
+- `GoogleBooksAdapter` implementation
+- Future adapters (`OpenLibraryAdapter`, etc.) with same output DTO
 
-- External provider -> **adapter** -> backend internal contract -> frontend
+### Steps
 
-Do not expose external payload directly to frontend.
+1. Keep `/api/v1/books/search` contract stable.
+2. Implement new adapter class using `BooksAdapter`.
+3. Map provider response to your internal DTO contract.
+4. Register provider in adapter selector (`adapters/index.ts`).
+5. Add adapter tests for mapping and error behavior.
 
-This reduces maintenance cost and makes provider migration feasible without rewriting the whole app.
+## Rules to keep
+
+- Frontend sends domain filters only.
+- Backend translates to provider language.
+- Backend owns provider keys and query shape.
+- Frontend consumes stable internal response schema.

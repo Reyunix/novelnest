@@ -78,9 +78,10 @@ Minimal local dev example:
 ```env
 DATABASE_URL=postgresql://postgres:postgres@localhost:5433/mydb
 JWT_SECRET=replace-with-a-strong-secret
-API_KEY=your-google-books-api-key
-BASE_URL=https://www.googleapis.com/books/v1/volumes?
-URL_FIELD=fields=items(id,volumeInfo(authors,canonicalVolumeLink,categories,description,imageLinks,industryIdentifiers,language,maturityRating,pageCount,publishedDate,publisher,title))
+API_BOOKS_PROVIDER=google
+API_KEY_GOOGLE=your-google-books-api-key
+API_BASE_URL_GOOGLE=https://www.googleapis.com/books/v1/volumes?
+API_VOLUME_FIELDS_GOOGLE=kind,totalItems,items(id,volumeInfo(authors,canonicalVolumeLink,categories,description,imageLinks,industryIdentifiers,language,maturityRating,pageCount,publishedDate,publisher,title))
 NODE_ENV=development
 ```
 
