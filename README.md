@@ -129,6 +129,8 @@ Use `localhost` consistently (avoid mixing with `127.0.0.1`) to prevent cookie/s
 - `docs/frontend/auth-context.md`
 - `docs/frontend/protected-routes.md`
 - `docs/frontend/constants-organization.md`
+- `docs/backend/auth-me-flow.md`
+- `docs/backend/error-handler.md`
 - `docs/external-api/external-api-integration.md`
 - `docs/external-api/provider-migration-playbook.md`
 - `docs/future-implementations.md`
